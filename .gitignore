@@ -16,4 +16,5 @@ Cargo.lock
 src/consumer_key
 src/consumer_secret
 twitter_token.json
-wordlist/
+wordlist_dir/
+counter
