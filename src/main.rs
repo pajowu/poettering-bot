@@ -55,7 +55,7 @@ fn write_counter(path: &Path, counter: usize) {
 
 fn get_next_word(counter: usize) -> Option<String> {
     let prime = 109847;
-    let limit = 303246;
+    let limit = 100390;
     let line_num = counter * prime % limit;
 
     let f_ = File::open(&Path::new("wordlist"));
