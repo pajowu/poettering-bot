@@ -1,0 +1,8 @@
+[package]
+name = "poett-bot"
+version = "0.1.0"
+authors = ["pajowu <github@ca.pajowu.de>"]
+
+[dependencies]
+egg-mode = "*"
+rustc-serialize = "*"
