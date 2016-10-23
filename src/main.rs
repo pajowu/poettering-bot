@@ -8,6 +8,8 @@ use std::path::Path;
 use std::fs::File;
 use std::io::{Read, Write};
 
+const PRIME: usize = 109847;
+
 fn send_tweet(config: auth::Config, status: String) {
     let draft = DraftTweet::new(&status);
     let result = draft.send(&config.con_token, &config.access_token);
@@ -54,7 +56,6 @@ fn write_counter(path: &Path, counter: usize) {
 }
 
 fn get_next_word(counter: usize) -> Option<String> {
-    let prime = 109847;
 
     let f_ = File::open(&Path::new("wordlist"));
 
@@ -68,7 +69,7 @@ fn get_next_word(counter: usize) -> Option<String> {
                 Ok(_) => {
                     let mut lines = s.lines();
                     let limit = lines.clone().count();
-                    let line_num = counter * prime % limit;
+                    let line_num = counter * PRIME % limit;
                     let line = lines.nth(line_num);
                     match line {
                         None => None,
