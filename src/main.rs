@@ -13,7 +13,7 @@ use config::Config;
 const PRIME: usize = 109847;
 
 fn send_tweet(config: &Config, status: String) {
-    /*let draft = DraftTweet::new(&status);
+    let draft = DraftTweet::new(&status);
     let result = draft.send(
         &config.con_token.as_ref().unwrap(),
         &config.access_token.as_ref().unwrap()
@@ -21,8 +21,7 @@ fn send_tweet(config: &Config, status: String) {
     match result {
         Err(e) => println!("{}", e),
         Ok(_) => (),
-    }*/
-    print!("{:?}", status);
+    }
 }
 
 fn get_next_word(counter: usize) -> Option<String> {
