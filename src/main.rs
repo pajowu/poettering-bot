@@ -1,58 +1,28 @@
 extern crate egg_mode;
-extern crate rustc_serialize;
+#[macro_use(object)] extern crate json;
 
-mod auth;
+mod config;
 
 use egg_mode::tweet::DraftTweet;
 use std::path::Path;
 use std::fs::File;
 use std::io::{Read, Write};
 
+use config::Config;
+
 const PRIME: usize = 109847;
 
-fn send_tweet(config: auth::Config, status: String) {
-    let draft = DraftTweet::new(&status);
-    let result = draft.send(&config.con_token, &config.access_token);
+fn send_tweet(config: &Config, status: String) {
+    /*let draft = DraftTweet::new(&status);
+    let result = draft.send(
+        &config.con_token.as_ref().unwrap(),
+        &config.access_token.as_ref().unwrap()
+    );
     match result {
         Err(e) => println!("{}", e),
         Ok(_) => (),
-    }
-}
-
-fn load_counter(p: &Path) -> usize {
-    let f_ = File::open(p);
-    match f_ {
-        Err(_) => return 0,
-        Ok(mut f) => {
-            let mut s = String::new();
-            let res = f.read_to_string(&mut s);
-            match res {
-                Err(_) => return 0,
-                Ok(_) => {
-                    let counter = s.parse::<usize>();
-                    match counter {
-                        Err(_) => return 0,
-                        Ok(counter) => return counter
-
-                    }
-                }
-            }
-        }
-    }
-}
-
-fn write_counter(path: &Path, counter: usize) {
-    let counter_file = File::create(path);
-    match counter_file {
-        Err(e) => println!("{:?}", e),
-        Ok(mut counter_file) => {
-            let res = counter_file.write(counter.to_string().as_bytes());
-            match res {
-                Err(e) => println!("{:?}", e),
-                Ok(_) => {}
-            }
-        }
-    }
+    }*/
+    print!("{:?}", status);
 }
 
 fn get_next_word(counter: usize) -> Option<String> {
@@ -82,16 +52,19 @@ fn get_next_word(counter: usize) -> Option<String> {
 }
 
 fn main() {
-    let twitter_config = auth::Config::load().unwrap();
-    let counter = load_counter(&Path::new("counter"));
+    let mut config = Config::load("config.json");
 
-    if let Some(word) = get_next_word(counter) {
-        send_tweet(twitter_config, format!("Poettering reinvents {}", &word));
-    } else {
-        println!("Couldn't get next word");
-        return;
+    let valid = config.validate();
+
+    if valid {
+        if let Some(word) = get_next_word(config.counter.unwrap()) {
+            send_tweet(&config, format!("Poettering reinvents {}", &word));
+        } else {
+            println!("Couldn't get next word");
+            return;
+        }
+        config.counter = Some(config.counter.unwrap() + 1);
     }
 
-    write_counter(&Path::new("counter"), counter+1)
-    
+    config.save("config.json")
 }

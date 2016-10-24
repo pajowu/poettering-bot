@@ -5,4 +5,4 @@ authors = ["pajowu <github@ca.pajowu.de>"]
 
 [dependencies]
 egg-mode = "*"
-rustc-serialize = "*"
+json = "*"

@@ -17,4 +17,4 @@ src/consumer_key
 src/consumer_secret
 twitter_token.json
 wordlist_dir/
-counter
+config.json
