@@ -3,7 +3,6 @@ Description=Automatic timer for helping lennart reinvent new things
 After=network.target
 
 [Timer]
-Unit=poettering.service
 OnActiveSec=0
 OnUnitActiveSec=1h
 
