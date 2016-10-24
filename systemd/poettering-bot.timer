@@ -1,5 +1,5 @@
 [Unit]
-Description=Automatic timer for tweeting a new programming paradigm
+Description=Automatic timer for helping lennart reinvent new things
 After=network.target
 
 [Timer]

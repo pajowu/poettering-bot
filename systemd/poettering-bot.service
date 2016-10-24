@@ -1,5 +1,5 @@
 [Unit]
-Description=Invent new programming paradigms
+Description=Help lennart reinvent new things
 After=network.target
 
 [Service]
