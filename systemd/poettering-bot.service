@@ -1,0 +1,11 @@
+[Unit]
+Description=Invent new programming paradigms
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/poettering-bot
+WorkingDirectory=/etc/poettering-bot
+
+[Install]
+WantedBy=multi-user.target
