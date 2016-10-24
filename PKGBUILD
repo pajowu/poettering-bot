@@ -7,7 +7,6 @@ arch=('i686' 'x86_64' 'armv6h' 'armv7h')
 pkgdesc="A twitter bot helping the lennart to come up with new things to reinvent"
 url="https://github.com/pajowu/poettering-bot"
 license=('GPL')
-backup=('etc/config.json')
 
 _gitroot='https://github.com/pajowu/poettering-bot.git'
 _gitname='poettering-bot'
@@ -26,7 +25,7 @@ build() {
 
 package() {
     cd "$_gitname"
-    cargo install --root="$pkgdir"
+    cargo install --root="$pkgdir/usr"
     mkdir -p "$pkgdir/etc/poettering-bot"
     install -vDm644 wordlist $pkgdir/etc/poettering-bot/wordlist
     install -vDm644 config.json.example $pkgdir/etc/poettering-bot/config.json.example
