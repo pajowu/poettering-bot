@@ -214,7 +214,10 @@ impl<'a> Config<'a> {
             },
             Ok(mut config_file) => {
                 let encoded = Self::serialize_config(self);
-                config_file.write(encoded.as_bytes());
+                match config_file.write(encoded.as_bytes()) {
+                    Ok(_) => (),
+                    Err(_) => println!("Couldn't write config file")
+                }
             }
         }
         ()
