@@ -6,7 +6,7 @@ mod config;
 use egg_mode::tweet::DraftTweet;
 use std::path::Path;
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::{Read};
 
 use config::Config;
 
