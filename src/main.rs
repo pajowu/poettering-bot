@@ -24,9 +24,8 @@ fn send_tweet(config: &Config, status: String) {
     }
 }
 
-fn get_next_word(counter: usize) -> Option<String> {
-
-    let f_ = File::open(&Path::new("wordlist"));
+fn is_bad_word(word: &str) -> Option<bool> {
+    let f_ = File::open(&Path::new("blacklist"));
 
     match f_ {
         Err(_) => None,
@@ -36,18 +35,75 @@ fn get_next_word(counter: usize) -> Option<String> {
             match res {
                 Err(_) => None,
                 Ok(_) => {
+                    let lines = s.lines();
+                    for line in lines {
+                        if line == word {
+                            return Some(true)
+                        }
+                    }
+                    return Some(false)
+                }
+            }
+        }
+    }
+}
+fn get_next_word(counter: usize) -> Result<String, String> {
+
+    assert!(counter % PRIME != 0, format!("Wordfile cannot contain a multiple of {} number lines", PRIME));
+
+    let f_ = File::open(&Path::new("wordlist"));
+
+    match f_ {
+        Err(_) => Err("Error opening file".to_string()),
+        Ok(mut f) => {
+            let mut s = String::new();
+            let res = f.read_to_string(&mut s);
+            match res {
+                Err(_) => Err("Error reading file".to_string()),
+                Ok(_) => {
                     let mut lines = s.lines();
                     let limit = lines.clone().count();
                     let line_num = counter * PRIME % limit;
                     let line = lines.nth(line_num);
                     match line {
-                        None => None,
-                        Some(word) => return Some(word.to_string())
+                        None => Err("Can't read word".to_string()),
+                        Some(word) =>  {
+                            let ibw = is_bad_word(word);
+                            match ibw {
+                                Some(b) => {
+                                    if !b {
+                                        return Ok(word.to_string())
+                                    } else {
+                                        Err("Bad word".to_string())
+                                    }
+                                },
+                                None => Err("Error when checking for bad word".to_string())
+                            }
+                        }
                     }
                 }
             }
         }
     }
+}
+fn generate_tweet(config: &mut Config) -> Option<String> {
+    let mut counter = config.counter.unwrap();
+    let mut tweet = "".to_string();
+    while tweet == "" {
+        match get_next_word(counter) {
+            Ok(word) => tweet = format!("Poettering reinvents {}", &word),
+            Err(err) => { 
+                if err != "Bad word".to_string() {
+                    println!("Couldn't get next word, Err: {}", err);
+                    return None
+                }
+            },
+        }
+        counter += 1;
+    }
+    config.counter = Some(counter);
+    
+    Some(tweet)
 }
 
 fn main() {
@@ -56,13 +112,11 @@ fn main() {
     let valid = config.validate();
 
     if valid {
-        if let Some(word) = get_next_word(config.counter.unwrap()) {
-            send_tweet(&config, format!("Poettering reinvents {}", &word));
-        } else {
-            println!("Couldn't get next word");
-            return;
+        let tweet = generate_tweet(&mut config);
+        if tweet.is_some() {
+            send_tweet(&config, tweet.unwrap().to_string());
         }
-        config.counter = Some(config.counter.unwrap() + 1);
+        
     }
 
     config.save("config.json")
