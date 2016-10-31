@@ -28,6 +28,7 @@ package() {
     cargo install --root="$pkgdir/usr"
     mkdir -p "$pkgdir/etc/poettering-bot"
     install -vDm644 wordlist $pkgdir/etc/poettering-bot/wordlist
+    install -vDm644 blacklist $pkgdir/etc/poettering-bot/blacklist
     install -vDm644 config.json.example $pkgdir/etc/poettering-bot/config.json.example
     install -vDm644 systemd/poettering-bot.service $pkgdir/usr/lib/systemd/system/poettering-bot.service
     install -vDm644 systemd/poettering-bot.timer $pkgdir/usr/lib/systemd/system/poettering-bot.timer
